@@ -71,7 +71,11 @@ typedef struct q {
 queue_t* newQueue() {
   queue_t* q_p;   // temp pointer to hold newly created queue
 
-  // ***** INSERT YOUR CODE HERE *****
+  q_p = (queue_t*)malloc(sizeof(queue_t));  // create new node
+  if (q_p != NULL) {
+    q_p->head_p = NULL;
+    q_p->tail_p = NULL;
+  }
   
   return q_p;
 };
@@ -80,26 +84,31 @@ queue_t* newQueue() {
 bool isEmpty(queue_t* q_p) {
   bool b = true;   // temporary bool to hold return value - initalize to default value
 
-  // ***** INSERT YOUR CODE HERE *****
+  b = (q_p->head_p == NULL && q_p->tail_p == NULL);
   
   return b;
 };
 
 // function to add a new node with data d to tail of the queue
 void enqueue(queue_t* q_p, int d) {
-  node_t* n_p = NULL; // temp node pointer
+  node_t* n_p = newNode(d); // temp node pointer
   
   if (q_p != NULL) {
 
     if (isEmpty(q_p)) {
       // queue is empty so insertion is easy
+      // The new node is both head and tail
 
-      // ***** INSERT YOUR CODE HERE *****
+      q_p->head_p = n_p;
+      q_p->tail_p = n_p;
+      
 
     } else {
       // queue is not empty
 
-      // ***** INSERT YOUR CODE HERE *****
+      q_p->tail_p->right_p = n_p;
+      n_p->left_p = q_p->tail_p;
+      q_p->tail_p = n_p;
 
     }    
   }
@@ -116,24 +125,24 @@ int dequeue(queue_t* q_p) {
     n_p = q_p->head_p;  // get a pointer to the head of the queue
 
     if (n_p != NULL) {
-	t = n_p->data;      // get the value of data in the head of the queue
+	    t = n_p->data;      // get the value of data in the head of the queue
 
-	if (q_p->head_p  == q_p->tail_p) {      
-          // only one node in the queue, clear queue head and tail 
+	    if (q_p->head_p  == q_p->tail_p) {      
+        // only one node in the queue, clear queue head and tail 
 
-          // ***** INSERT YOUR CODE HERE *****
-	  
-	} else {
-          // mulitple nodes in queue, clean up head pointer and new head of queue
+        q_p->head_p = NULL;
+        q_p->tail_p = NULL;
 
-	  // ***** INSERT YOUR CODE HERE *****
-	  
-	}
-	
-	freeNode(n_p);  // free up the node that was dequeued
+      } else {
+        // mulitple nodes in queue, clean up head pointer and new head of queue
+
+        q_p->head_p = q_p->head_p->right_p;
+        q_p->head_p->left_p = NULL;
+      
+      }
+	    freeNode(n_p);  // free up the node that was dequeued
     }
-  }
-    
+  }  
   return t;
 };
 
