@@ -1,5 +1,5 @@
-// name: <your name here>
-// email: <your email here>
+// name: Xiangying Sun
+// email: sun.xiangyi@northeastern.edu
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -36,9 +36,15 @@ void selection_sort_2arr(int* source, int* dest, bool* valid)
   int smallest;      // current smallest element
 
   for (int i=0; i<LIMIT; i++) {
+    smallest = i;
+    for (int j=0; j < LIMIT; j++) {
+      if (valid[j] && source[smallest] > source[j]){
+        smallest = j;
+      }
+    }
 
-  // INSERT YOUR CODE HERE
-
+    dest[i] = source[smallest];
+    valid[smallest] = false; // mark this element as invalid
   }
 }
 
@@ -48,9 +54,19 @@ void selection_sort_1arr(int* source)
   int smallest;      // current smallest element
   int temp;          // temporary for swap
 
-  for (int i=0; i<LIMIT; i++) {
+  for (int i=0; i<LIMIT-1; i++) {
+    smallest = i;
+    for (int j=i+1; j<LIMIT; j++) {
+      if (source[smallest] > source[j]) {
+        smallest = j;
+      }
+    }
 
-  // INSERT YOUR CODE HERE
+    if(smallest != i){
+      temp = source[i];
+      source[i] = source[smallest];
+      source[smallest] = temp;
+    }
 
   }
 }
