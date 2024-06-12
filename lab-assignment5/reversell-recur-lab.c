@@ -1,4 +1,5 @@
-//enter your name and email here
+//Name:Xiangying Sun
+//Email: sun.xiangyi@northeastern.edu
 #include<stdio.h>
 #include<stdlib.h>
 typedef struct node
@@ -14,17 +15,31 @@ typedef struct list{
 /*-----creating the nodes----------*/
 node_t* newNode(int num)
 {
- 
+    node_t* new_node = (node_t*)malloc(sizeof(node_t));
+    if (!new_node) {
+        printf("Memory allocation error\n");
+        exit(1);
+    }
+    new_node -> data = num;
+    new_node -> next = NULL;
+    return new_node;
 }
 /*---creating linked list----*/
 List* init_LL(){
-    
+    List* list = (List*)malloc(sizeof(List));
+    if (!list) {
+        printf("Memory allocation error\n");
+        exit(1);
+    }
+    list->head = NULL;
+    return list;
 }
 
 /*---Insert the nodes at the begining of the list---*/
 void insertFirst(List* l, int data){
-    
-
+    node_t* new_node = newNode(data);
+    new_node -> next = l->head;
+    l->head = new_node;
 }
 
 /*----display the output--------*/
@@ -41,15 +56,18 @@ void display(List* l)
 }
 
 /*-------reversing the linked list using recursion------*/
-void reverse(List* l, node_t* ptr)
-{
-    
-    
-    
-    
-//insert your code here
-    
-    
+void reverseUtil(node_t **head, node_t *curr, node_t *prev) {
+    if (!curr) {
+        *head = prev;
+        return;
+    }
+    node_t *next = curr->next;
+    curr->next = prev;
+    reverseUtil(head, next, curr);
+}
+
+void reverse(List *l, node_t *ptr) {
+    reverseUtil(&(l->head), ptr, NULL);
 }
 
 /*----Free the nodes-----*/
