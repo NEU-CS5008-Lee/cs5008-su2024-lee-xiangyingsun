@@ -1,5 +1,5 @@
-// name: <your name here>
-// email: <your email here>
+// name: Xiangying Sun
+// email: sun.xiangyi@northeastern.edu
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -32,14 +32,55 @@ int findMin(int a, int b){
 
 // merge two sorted sub arrays
 void mergeIt(
-	   char* data,
-	   int leftStart,
-	   int leftStop,
-	   int rightStart,
-	   int rightStop) {
-  
+  char* data,
+  int leftStart,
+  int leftStop,
+  int rightStart,
+  int rightStop) {
+    
+    int leftSize = leftStop - leftStart + 1;
+    int rightSize = rightStop - rightStart + 1;
 
-  // ADD YOUR CODE HERE
+    char *leftArray = (char *)malloc(leftSize * sizeof(char));
+    char *rightArray = (char *)malloc(rightSize * sizeof(char)); // it's safer to use malloc to allocate memory
+
+    for(int i=0; i<leftSize; i++) {
+      leftArray[i] = data[leftStart+i];
+    }
+
+    for(int i=0; i<rightSize; i++) {
+      rightArray[i] = data[rightStart+i];
+    }
+
+    int leftIndex = 0, rightIndex = 0, mergeIndex = leftStart;
+
+    while(leftIndex < leftSize && rightIndex < rightSize) {
+      if(leftArray[leftIndex]<=rightArray[rightIndex]){
+        data[mergeIndex] = leftArray[leftIndex];
+        leftIndex++;
+      }
+      else{
+        data[mergeIndex] = rightArray[rightIndex];
+        rightIndex++;
+      }
+
+      mergeIndex++;
+    }
+
+    while(leftIndex < leftSize) {
+      data[mergeIndex] = leftArray[leftIndex];
+      mergeIndex++;
+      leftIndex++;
+    }
+
+    while(rightIndex > rightSize) {
+      data[mergeIndex] = rightArray[rightIndex];
+      mergeIndex++;
+      rightIndex++;
+    }
+
+  free(leftArray);
+  free(rightArray);
   
   return;
 }
