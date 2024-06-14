@@ -1,5 +1,5 @@
-/*---enter your name here----*/
-/*---enter your email here-----*/
+/*---Xiangying Sun----*/
+/*---sun.xiangyi@northeastern.edu-----*/
 
 #include<stdio.h>
 #include<stdlib.h>
@@ -130,8 +130,13 @@ node_t* Insert(node_t* root, int data)
 {
     
     
-    //insert your code here
-
+    if(root==NULL){
+        root = NewNode(data);
+    }
+    else{
+        if(root->data > data) root->left = Insert(root->left, data);
+        else root->right = Insert(root->right, data);
+    }
 
     /*updating the height after insertion of the node*/
     root->height = max(height(root->left),height(root->right))+1;
