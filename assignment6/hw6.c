@@ -1,5 +1,5 @@
-// name: <your name here>
-// email: <your email here>
+// name: Xiangying Sun
+// email: sun.xiangyi@northeastern.edu
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -243,29 +243,50 @@ void freeQueue(queue_t* qp) {
 // void breadthFirst (tnode_t* np) {}
 
 void preorder (tnode_t* np) {
-  // INSERT YOUR CODE HERE
-
-  return;
+  if (np != NULL) {
+    printf("%c ", np->data);  // visit root
+    preorder(np->left);       // traverse left
+    preorder(np->right);      // traverse right
+  }
 }
 
 void inorder (tnode_t* np) {
-  // INSERT YOUR CODE HERE
-  
-  return;
+  if (np != NULL) {
+    inorder(np->left);        // traverse left
+    printf("%c ", np->data);  // visit root
+    inorder(np->right);       // traverse right
+  }
 }
 
 void postorder (tnode_t* np) {
-  // INSERT YOUR CODE HERE
-  
-  return;
+  if (np != NULL) {
+    postorder(np->left);      // traverse left
+    postorder(np->right);     // traverse right
+    printf("%c ", np->data);  // visit root
+  }
 }
-
 
 void breadthFirst (tnode_t* root) {
-  // INSERT YOUR CODE HERE
-  
-  return;
+  if (root != NULL) {
+    queue_t* q = newQueue();   // create a queue
+    enqueue(q, root);          // enqueue root
+
+    while (!isEmpty(q)) {
+      tnode_t* np = dequeue(q);  // dequeue a node
+      printf("%c ", np->data);   // visit node
+
+      if (np->left != NULL) {
+        enqueue(q, np->left);  // enqueue left child
+      }
+      if (np->right != NULL) {
+        enqueue(q, np->right); // enqueue right child
+      }
+    }
+
+    freeQueue(q);  // free the queue
+  }
 }
+
 
 
 
