@@ -1,5 +1,5 @@
-// name: <your name here>
-// email: <your email here>
+// name: Xiangying Sun
+// email: sun.xiangyi@northeastern.edu
 
 // format of document is a bunch of data lines beginning with an integer (rank which we ignore)
 // then a ',' followed by a double-quoted string (city name)
@@ -82,36 +82,95 @@ int main () {
 
       if (nextChar >= strlen(inputLine)){
 	// if no input string then go to ERRORSTATE
-	state = ERRORSTATE;
+  state = ERRORSTATE;
       } 
 
       while ((state != ERRORSTATE) && (state != ACCEPTSTATE)) {
-	switch (state) {
-	  case STARTSTATE:
-	    // look a digit to confirm a valid line
-	    if (isDigit(inputLine[nextChar])) {
-	      state = S1;
-	      appendChar(temp, inputLine[nextChar]);
-	    } else {
-	      state = ERRORSTATE;
-	    }  
-	    break;
+        switch (state) {
+          case STARTSTATE:
+            // look a digit to confirm a valid line
+            if (isDigit(inputLine[nextChar])) {
+              state = S1;
+              appendChar(temp, inputLine[nextChar]);
+            } else {
+              state = ERRORSTATE;
+            }  
+            break;
 
+          case S1:
+            if (isDigit(inputLine[nextChar])) {
+              appendChar(temp, inputLine[nextChar]);
+            } else if (inputLine[nextChar] == ',') {
+              state = S2;
+              lineNum = atoi(temp);  // convert temp to line number
+              strcpy(temp, "");      // reset temp
+            } else {
+              state = ERRORSTATE;
+            }
+            break;
 
-	  // ADD YOUR CODE HERE
- 
-	    
-	  case ACCEPTSTATE:
-	    // nothing to do - we are done!
-	    break;
-	    
-	  default:
-	    state = ERRORSTATE;
-	    break;
-	} // end switch
+          case S2:
+            if (inputLine[nextChar] == '"') {
+              state = S3;
+            } else {
+              state = ERRORSTATE;
+            }
+            break;
 
-	// advance input
-	nextChar++;
+          case S3:
+            if (inputLine[nextChar] != '"') {
+              appendChar(temp, inputLine[nextChar]);
+            } else {
+              state = S4;
+              strcpy(cityStr, temp); // copy temp to cityStr
+              strcpy(temp, "");      // reset temp
+            }
+            break;
+
+          case S4:
+            if (inputLine[nextChar] == ',') {
+              state = S5;
+            } else {
+              state = ERRORSTATE;
+            }
+            break;
+
+          case S5:
+            if (inputLine[nextChar] == '"') {
+              state = S6;
+            } else if (inputLine[nextChar] == '(') {
+              popInt = 0;           // if '(' then population is 0
+              state = ACCEPTSTATE;
+            } else {
+              state = ERRORSTATE;
+            }
+            break;
+
+          case S6:
+            if (isDigit(inputLine[nextChar])) {
+              appendChar(temp, inputLine[nextChar]);
+            } else if (inputLine[nextChar] == ',') {
+              // do nothing, continue in S6
+            } else if (inputLine[nextChar] == '"') {
+              state = ACCEPTSTATE;
+              popInt = atoi(temp);  // convert temp to population
+              strcpy(temp, "");     // reset temp
+            } else {
+              state = ERRORSTATE;
+            }
+            break;
+            
+          case ACCEPTSTATE:
+            // nothing to do - we are done!
+            break;
+            
+          default:
+            state = ERRORSTATE;
+            break;
+        } // end switch
+
+        // advance input
+        nextChar++;
 	
       }	// end while state machine loop
 

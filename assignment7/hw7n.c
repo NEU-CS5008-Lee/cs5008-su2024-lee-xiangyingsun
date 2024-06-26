@@ -1,5 +1,5 @@
-// name: <your name here>
-// email: <your email here>
+// name: Xiangying Sun
+// email: sun.xiangyi@northeastern.edu
 
 // Hash table with doubly linked list for chaning/
 #include <stdio.h>
@@ -10,22 +10,27 @@ int BUCKET_SIZE = 10;
 
 // node struct
 struct node {
-
-    // Add your code here
-
+    int key;
+    int value;
+    struct node* next;
+    struct node* prev;
 };
 
 // bucket struct
 struct bucket{
 
-    // Add your code here
+    struct node* head;
 
 };
 
 // create a new node
 struct node* createNode(int key, int value){
 
-    // Add your code here
+    struct node* newNode = (struct node*)malloc(sizeof(struct node));
+    newNode->key = key;
+    newNode->value = value;
+    newNode->next = NULL;
+    newNode->prev = NULL;
 
     return newNode;
 }
@@ -39,7 +44,18 @@ int hashFunction(int key){
 void add(int key, int value){
     int hashIndex = hashFunction(key);
     
-    // Add your code here
+    struct node* newNode = createNode(key, value);
+
+    if(hashTable[hashIndex].head == NULL){
+        hashTable[hashIndex].head = newNode;
+    } else {
+        struct node* temp = hashTable[hashIndex].head;
+        while(temp->next != NULL){
+            temp = temp->next;
+        }
+        temp->next = newNode;
+        newNode->prev = temp;
+    }
 
 }
 
@@ -47,8 +63,23 @@ void add(int key, int value){
 void remove_key(int key){
     int hashIndex = hashFunction(key);
 
-    // Add your code here
+    struct node* node = hashTable[hashIndex].head;
 
+    while(node!=NULL){
+        if(node->key == key){
+            if(node->prev != NULL) {
+                node->prev->next = node->next;
+            } else {
+                hashTable[hashIndex].head = node->next;
+            }
+            if(node->next != NULL) {
+                node->next->prev = node->prev;
+            }
+            free(node);
+            return;
+        }
+        node = node->next;
+    }  
 }
 
 // search a value using a key
@@ -56,7 +87,13 @@ void search(int key){
     int hashIndex = hashFunction(key);
     struct node* node = hashTable[hashIndex].head;
 
-    // Add your code here
+    while(node != NULL){
+        if(node->key == key){
+            printf("Found key %d with value %d\n", key, node->value);
+            return;
+        }
+        node = node->next;
+    }
 
 }
 
