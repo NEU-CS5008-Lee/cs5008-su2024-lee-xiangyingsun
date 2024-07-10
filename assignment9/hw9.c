@@ -1,5 +1,5 @@
-// name: <your name here>
-// email: <your email here>
+// name: Xiangying Sun
+// email: sun.xiangyi@northeastern.edu
 
 
 #include <stdio.h>
@@ -13,7 +13,6 @@
 
 // define a graph type - two dimensional array - association matrix
 typedef bool graph_t[GSIZE][GSIZE];
-
 
 // debug print the graph as boolean matrix
 void printGraphAsMatrix(graph_t g, int size){
@@ -33,7 +32,7 @@ void printGraphAsMatrix(graph_t g, int size){
   }
 }
 
-// print the graph as an list of edges
+// print the graph as a list of edges
 void printGraphAsList(graph_t g, int size){
   int i, j;
 
@@ -42,8 +41,8 @@ void printGraphAsList(graph_t g, int size){
   for (i=0; i<size; i++) {
     for (j=0; j<size; j++) {
       if (g[i][j]) {
-	printf("%d -> %d\n",i,j);
-      } 
+	printf("%d -> %d\n", i, j);
+      }
     }
   }
 }
@@ -63,8 +62,6 @@ void printGraphAsList(graph_t g, int size){
  *      V
  *      NULL
  */
-
-
 
 //---------------------------- NODE ---------------------------- 
 // doubly linked list node
@@ -95,8 +92,6 @@ void freeNode (node_t* n_p) {
   return;
 };
 
-
-
 //---------------------------- QUEUE  ---------------------------- 
 // a queue - combining a head and a tail pointer
 typedef struct q {
@@ -117,7 +112,7 @@ queue_t* newQueue() {
 
 // is the queue empty?
 bool isEmpty(queue_t* q_p) {
-  bool b = true;   // temporary bool to hold return value - initalize to default value
+  bool b = true;   // temporary bool to hold return value - initialize to default value
   if (q_p != NULL) {
     b = (q_p->head_p == NULL);
   }
@@ -133,10 +128,10 @@ void enqueue(queue_t* q_p, int d) {
     if (isEmpty(q_p)) {
       // queue is empty so insertion is easy
       q_p->tail_p = newNode(d);  // create new node and put it in the tail
-      q_p->head_p = q_p->tail_p; // in queue with 1 node, head and tail point to same ndoe
+      q_p->head_p = q_p->tail_p; // in queue with 1 node, head and tail point to same node
     } else {
       // queue is not empty
-      n_p = q_p->tail_p;          // get a pointer to the tail fo the queue
+      n_p = q_p->tail_p;          // get a pointer to the tail of the queue
       q_p->tail_p = newNode(d);   // create new node and put it in the tail
       n_p->left_p = q_p->tail_p;  // old tail's left pointer points back to new tail node
       q_p->tail_p->right_p = n_p; // new tail's right pointer points to old tail node
@@ -149,7 +144,7 @@ void enqueue(queue_t* q_p, int d) {
 // function to take the node off the head of the queue and return its value
 int dequeue(queue_t* q_p) {
   int t = -9999;      // temp int to hold return val with arbitrary error value of -9999
-  node_t* n_p = NULL; // temp node poitner
+  node_t* n_p = NULL; // temp node pointer
   
   if (q_p != NULL) {
     n_p = q_p->head_p;  // get a pointer to the head of the queue
@@ -162,7 +157,7 @@ int dequeue(queue_t* q_p) {
 	  q_p->head_p = NULL;
 	  q_p->tail_p = NULL;
 	} else {
-          // mulitple nodes in queue, clean up head pointer and new head of queue
+          // multiple nodes in queue, clean up head pointer and new head of queue
 	  q_p->head_p = n_p->left_p;   // new head points to next (left of old head) element of queue
 	  q_p->head_p->right_p = NULL; // new head node has NULL right pointer
 	}
@@ -173,7 +168,6 @@ int dequeue(queue_t* q_p) {
     
   return t;
 };
-
 
 // if queue is not empty, then clean it out -- then free the queue struct
 void freeQueue(queue_t* q_p) {
@@ -189,8 +183,6 @@ void freeQueue(queue_t* q_p) {
   return;
 };
 
-
-  
 int main () {
 
   // define graph as association matrix
@@ -214,36 +206,52 @@ int main () {
   int current;
   bool done[GSIZE];   // are we done with this node?
 
-  // initialize finsihed to false - not done with any node yet
+  // initialize finished to false - not done with any node yet
   for (i=0; i<GSIZE; i++) {
     done[i] = false;
   }
 
   // debug print out the graph - as a list
-  printGraphAsList(E,GSIZE);
+  printGraphAsList(E, GSIZE);
 
   // add start node to work queue
-  enqueue(q,0);
+  enqueue(q, 0);
 
-  printf("\nBREADTH FIRST TRAFERSAL\n");
+  printf("\nBREADTH FIRST TRAVERSAL\n");
   while (!isEmpty(q)) {
+    // dequeue the next node
+    current = dequeue(q);
 
-    // INSERT YOUR CODE HERE
-    
+    // if the node has not been visited yet
+    if (!done[current]) {
+      // mark it as done
+      done[current] = true;
+
+      // process the current node
+      printf("%d ", current);
+
+      // enqueue all adjacent nodes that have not been visited
+      for (j = 0; j < GSIZE; j++) {
+        if (E[current][j] && !done[j]) {
+          enqueue(q, j);
+        }
+      }
+    }
   }
 
   // print out nodes that are unreachable
   printf("\nUNREACHABLE NODES: ");
-  for (i=0; i<GSIZE; i++) {
+  for (i = 0; i < GSIZE; i++) {
     if (!done[i]) {
       printf("%d ", i);
     }
   }
   printf("\n");
   printf("----------\n");
-	 
+
   // free up the queue
   freeQueue(q);
-  
+
   return 0;
 }
+
