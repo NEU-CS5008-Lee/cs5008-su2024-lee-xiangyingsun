@@ -1,5 +1,5 @@
-//enter your email here
-//enter your name here
+//sun.xiangyi@northeastern.edu
+//Xiangying Sun
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -10,115 +10,127 @@ typedef struct node
 {
     char name[50];
     struct node* next;
-}node;
+} node;
 
 /* Structure represents a Graph with an array of adjacency lists.
-   Size of the array will be number of vertices.*/
+   Size of the array will be number of vertices. */
 typedef struct Graph
 {
     int numberOfVertices;
     struct node** adjLists;
-}Graph;
+} Graph;
 
-/*A function to create a new node*/
+/* A function to create a new node */
 node* createNode(char* name)
 {
-    node* newNode=(node*)malloc(sizeof(node));
-    strcpy(newNode->name,name);
-    newNode->next=NULL;
+    node* newNode = (node*)malloc(sizeof(node));
+    strcpy(newNode->name, name);
+    newNode->next = NULL;
     return newNode;
 }
 
 /* A function to create a graph with an array of adjacency lists
-   which is= number of vertices */
+   which is equal to number of vertices */
 Graph* createGraph(int vertices)
 {
-    Graph* graph=(Graph*)malloc(sizeof(Graph));
-    graph->numberOfVertices=vertices;
-    graph->adjLists=(struct node**)malloc(vertices* sizeof(struct node*));
-    for(int i=0;i<vertices;i++){
-        graph->adjLists[i]=NULL;
+    Graph* graph = (Graph*)malloc(sizeof(Graph));
+    graph->numberOfVertices = vertices;
+    graph->adjLists = (struct node**)malloc(vertices * sizeof(struct node*));
+    for (int i = 0; i < vertices; i++) {
+        graph->adjLists[i] = NULL;
     }
     return graph;
 }
 
-/* function to count Number of lists present in the graph */
-int numberoflistspresent(Graph* graph)
+/* Function to count number of lists present in the graph */
+int numberOfListsPresent(Graph* graph)
 {
-    int i,j=0;//j->number of lists already there in the graph
-    for(i=0;i<graph->numberOfVertices;i++){
-        if(graph->adjLists[i]!=NULL){
+    int i, j = 0; // j -> number of lists already there in the graph
+    for (i = 0; i < graph->numberOfVertices; i++) {
+        if (graph->adjLists[i] != NULL) {
             j++;
         }
     }
- return j;   
+    return j;
 }
 
-/* searching the persons who are already there in the list if found,
-   return his position, otherwise return -1 */
+/* Searching the persons who are already there in the list if found,
+   return their position, otherwise return -1 */
 int search(char* name, Graph* graph)
 {
     int i;
-    for(i=0;i<numberOfListspresent(graph);i++){
-        if(strcmp(graph->adjLists[i]->name,name)==0){
-            return i;    //position of person in the list
+    for (i = 0; i < numberOfListsPresent(graph); i++) {
+        if (strcmp(graph->adjLists[i]->name, name) == 0) {
+            return i;    // position of person in the list
         }
-    
     }
-    return -1; //person not found in the list
+    return -1; // person not found in the list
 }
 
-/* adds an edge to an undirected graph */
-void addConnection(Graph* graph, char* person, char* friend){
-    int p = search(person, graph);//search for the person in the graph,index or position
-    int n=numberoflistspresent(graph);
+/* Adds an edge to an undirected graph */
+void addConnection(Graph* graph, char* person, char* friend)
+{
+    int p = search(person, graph); // search for the person in the graph, index or position
+//    int f = search(friend, graph); // search for the friend in the graph, index or position
+
+    int n = numberOfListsPresent(graph);
     
-    
-    
-    //insert your code here
-    
-    
-    
-    
-    
+    // If person is not found, add them to the graph
+    if (p == -1) {
+        p = n;
+        graph->adjLists[p] = createNode(person);
+        n++;
+    }
+    // If connection is not found, add the connection at the end of the list
+    node* newNode = createNode(friend);
+    node* temp = graph->adjLists[p];
+    while (temp->next != NULL) {
+        if (strcmp(temp->next->name, friend) == 0) {
+            return; // connection exists
+        }
+        temp = temp->next;
+    }
+    temp->next = newNode;
 }
 
-/* function to print the adjacency list representation of a graph */
+/* Function to print the adjacency list representation of a graph */
 void printGraph(Graph* graph)
 {
     int i;
-    for (i = 0; i<graph->numberOfVertices;i++)
+    for (i = 0; i < graph->numberOfVertices; i++)
     {
-        //print the current vertex and all its neighbors
-        struct node* temp = graph->adjLists[i];
-        printf("\n%s---",graph->adjLists[i]->name );
-        while((temp->next)!=NULL)
-        {
-            printf("%s-", temp->next->name);
-            temp = temp->next;
+        if (graph->adjLists[i]) {
+            // Print the current vertex and all its neighbors
+            struct node* temp = graph->adjLists[i];
+            printf("\n%s---", graph->adjLists[i]->name);
+            while ((temp->next) != NULL)
+            {
+                printf("%s-", temp->next->name);
+                temp = temp->next;
+            }
+            printf("NULL\n");
         }
-        printf("NULL\n");
     }
 }
 
-/*   CONVERSION TO MATRIX*/
+/* Conversion to matrix */
 int getIndex(Graph* graph, char* name)
 {
     int N = graph->numberOfVertices;
-    int i,j=0;
-    for (i = 0; i<N&& strcmp(name,graph->adjLists[i]->name)!=0 ;i++)
+    int i, j = 0;
+    for (i = 0; i < N && strcmp(name, graph->adjLists[i]->name) != 0; i++)
     {
         j++;
     }
     return j;
 }
 
-void matrixForm(Graph* graph, int emptyMatrix[50][50],int N)
+void matrixForm(Graph* graph, int emptyMatrix[50][50], int N)
 {
-    int i,j;
-    for (i = 0; i<N;i++){
+    int i, j;
+    for (i = 0; i < N; i++){
         struct node* temp = graph->adjLists[i]->next;
-        while (temp!=0)
+        while (temp != 0)
         {
             j = getIndex(graph, temp->name);
             emptyMatrix[i][j] = 1;
@@ -131,21 +143,21 @@ void graphDestroy(Graph *graph)
 {
     int i;
     node* p;
-    for(i=0; i<graph->numberOfVertices;i++){
-        node *temp=graph->adjLists[i];
-        while(temp!=NULL){
-            p=temp;
-            temp=temp->next;
+    for (i = 0; i < graph->numberOfVertices; i++){
+        node *temp = graph->adjLists[i];
+        while (temp != NULL){
+            p = temp;
+            temp = temp->next;
             free(p);
         }
     }
     free(graph->adjLists);
-        free(graph);
-    }
+    free(graph);
+}
 
 void printMatrix(int matrix[50][50], Graph* graph)
 {
-    int row,col,nodes=graph->numberOfVertices;
+    int row, col, nodes = graph->numberOfVertices;
     printf("\nAdjacent matrix:\n");
     printf("        ");
     for (col = 0; col < nodes; col++)
@@ -169,9 +181,8 @@ void printMatrix(int matrix[50][50], Graph* graph)
 
 int main()
 {
-    
-    int Num=7;
-    //construct a graph
+    int Num = 7;
+    // Construct a graph
     Graph* graph = createGraph(Num);
     
     addConnection(graph, "personA", "personB");
@@ -200,10 +211,12 @@ int main()
     addConnection(graph, "personG", "personA");
     addConnection(graph, "personG", "personE");
     addConnection(graph, "personG", "personF");
-    //function to print the adjacency list representation of a graph
+    
+    // Function to print the adjacency list representation of a graph
     printGraph(graph);
-    /*Initialising adjacency matrix with values NULL*/
-    int N = graph->numberOfVertices, i,j;
+    
+    // Initialising adjacency matrix with values NULL
+    int N = graph->numberOfVertices, i, j;
     int adj_matrix[50][50];
     for (i = 0; i < N; i++)
     {
@@ -211,10 +224,12 @@ int main()
         {
             adj_matrix[i][j] = 0;
         }
-        
     }
+    
     matrixForm(graph, adj_matrix, N);
     printMatrix(adj_matrix, graph);
     graphDestroy(graph);
+    
     return 0;
 }
+
