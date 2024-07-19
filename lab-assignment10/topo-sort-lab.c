@@ -1,5 +1,5 @@
-// Enter your name here
-//Enter your email here
+// Xiangying Sun
+//sun.xiangyi@northeastern.edu
 
 #include<stdio.h>
 #include<stdlib.h>
@@ -86,9 +86,13 @@ void printAdjMatrix(int arr[][MAX],int V)
 /*calculate the indegree of each vertex by looping through all vertices and edges in the adjacency matrix*/
 int find_indegree(int arr[][MAX], int node,int n)
 {
-    int i,in_deg = 0;
-    
-    //insert your code here
+    int i, in_deg = 0;
+    for (i = 1; i <= n; i++) {
+        if (arr[i][node] == 1) {
+            in_deg++;
+        }
+    }
+    return in_deg;
     
 }
 
@@ -101,7 +105,32 @@ void topologicalOrder(int arr[][MAX], Queue *t, int n)
     
     
     
-    //insert your code here
+    // Calculate in-degrees of all vertices
+    for (i = 1; i <= n; i++) {
+        indeg[i] = find_indegree(arr, i, n);
+        // Enqueue vertices with in-degree 0
+        if (indeg[i] == 0) {
+            enqueue(t, i);
+        }
+    }
+
+    // Process vertices
+    while (!isEmpty(t->front)) {
+        delNode = dequeue(t);
+        result[j++] = delNode;
+
+        // Decrease in-degree of adjacent vertices
+        for (i = 1; i <= n; i++) {
+            if (arr[delNode][i] == 1) {
+                arr[delNode][i] = 0; // Remove edge
+                indeg[i]--;
+                // If in-degree becomes 0, enqueue it
+                if (indeg[i] == 0) {
+                    enqueue(t, i);
+                }
+            }
+        }
+    }
     
     
     
