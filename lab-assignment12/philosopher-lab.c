@@ -1,5 +1,5 @@
-//Enter your name here
-//Enter your email here
+//Xiangying Sun
+//sun.xiangyi@northeastern.edu
 #include <stdio.h>
 #include <unistd.h>
 #include <pthread.h>
@@ -12,9 +12,35 @@ void *philosopher(void *x)
     int* a=(int*)x;
     int n=*a;
     
-    /*-----Insert your code here----*/
-    
-    
+    int left = n;
+    int right = (n+1) % 5;
+    n = n+1;
+
+    while (1) {
+        // Thinking
+        printf("Philosopher %d is thinking.\n", n);
+        sleep(1); // simulate thinking
+
+        // Take right chopstick
+        pthread_mutex_lock(&chopstick[right]);
+
+        // Check if left chopstick is available
+        if (pthread_mutex_trylock(&chopstick[left]) == 0) {
+            // If left chopstick is available, take it and eat
+            printf("Philosopher %d is eating using chopstick[%d] and chopstick[%d].\n", n, left, right);
+            sleep(1); // simulate eating
+
+            // Put down both chopsticks after eating
+            pthread_mutex_unlock(&chopstick[right]);
+            pthread_mutex_unlock(&chopstick[left]);
+            printf("Philosopher %d finished eating. \n", n);
+            return NULL; //return when finish eating to make sure each people only eat once
+        } else {
+            // If left chopstick is not available, put down the right chopstick and think
+            pthread_mutex_unlock(&chopstick[right]);
+            sleep(1); // simulate sleeping
+        }
+    }
 }
 
 
