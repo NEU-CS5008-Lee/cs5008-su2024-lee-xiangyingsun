@@ -1,5 +1,5 @@
-// name: <your name here>
-// email: <your email here>
+// name: Xiangying Sun
+// email: sun.xiangyi@northeastern.edu
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -48,11 +48,11 @@ char *runlengthencoding(char *str,char *rle )
 
 int getcount(char *rle)
 {   
-    int count=0;
-    //
-    // Add your code here to return count for the current char
-    //
-
+    int count = 0;
+    while (isdigit(*rle)) {
+        count = count * 10 + (*rle - '0');
+        rle++;
+    }
     return count;
 }
 
@@ -63,11 +63,23 @@ char *decode_rle(char *rle, char *str)
     char decoding[100];
     int i=0,j=0,count=0, digit=0;
     strcpy(str, "");
-    //
-    //
-    // Add your code here to decode rle
-    //
-    //
+
+    while (ptr < ptrend) {
+        if (isalpha(*ptr)) {
+            str[i++] = *ptr;
+            ptr++;
+            if (isdigit(*ptr)) {
+                count = getcount(ptr);
+                while (isdigit(*ptr)) {
+                    ptr++;
+                }
+                for (j = 0; j < count; j++) {
+                    str[i] = str[i - 1];
+                    i++;
+                }
+            }
+        }
+    }
 
     str[i] = '\0';
     return str;
